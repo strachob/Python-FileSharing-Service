@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8"/>
+    <title>Strachob Drive</title>
+    <link href="{{ url_for('static', filename='styles/registerstyles.css') }}" rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+</head>
+<body>
+    <form action="/strachob/drive/register" method="post">
+        <div class="box">
+        <h1>Strachob Drive - Register</h1>
+        <input type="text"  class="email" value="name" name="name" onFocus="field_focus(this, 'name');" onblur="field_blur(this, 'name');" id="nameField"/>
+  
+        <input type="email" name="login" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" id="emailField" />
+  
+        <input type="password" name="password" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" id="passField"/>
+  
+        <label class="btn">Sign Up<input type="submit"/></label>
+
+        <a href="/strachob/drive"><div id="btn2">Back</div></a> <!-- End Btn2 -->
+  
+
+        {% if error%}
+                <h3 id='error'>{{error}}</h3>
+        {% endif %}
+        </div> <!-- End Box -->
+  
+    </form>
+
+
+<script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+</body>
+</html>

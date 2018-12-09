@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Strachob Drive</title>
+    <link href="{{ url_for('static', filename='styles/loginstyle.css') }}" rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+</head>
+<body>
+    <form method="post" action="/strachob/drive/login">
+        <div class="box">
+            <h1>Strachob Drive</h1>
+
+            <input type="email" name="login" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" id="emailField"/>
+  
+            <input type="password" name="pass" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" id="passField" />
+  
+            <label class="btn">Sign In<input type="submit"/></label> <!-- End Btn -->
+
+            <a href="regiform"><div id="btn2">Sign Up</div></a> <!-- End Btn2 -->
+  
+            {% if error%}
+                <h3 id='error'>{{error}}</h3>
+            {% endif %}
+        </div> <!-- End Box -->
+  
+    </form>
+
+    <script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+</body>
+</html>

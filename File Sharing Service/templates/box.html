@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Strachob Drive</title>
+    <link href="{{ url_for('static', filename='styles/boxstyles.css') }}" rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+</head>
+<body>
+    
+        <div class="box">
+            <h1 align="left">{{username}}'s files</h1>
+            <form method="post" action="/strachob/drive/logout">
+                <label class="btn2" id="so">Sign Out<input type="submit" /></label>
+            </form>
+
+            <div class="listbox">
+                <ul align="left">
+                    {% if files %}
+                        {% for file in files %}
+                            <li> <a href="/strachob/drive/download/{{username}}/{{file}}" class="file">{{ file }}</a><a href="#"><div class="deleteButton">&#10006;</div></a></li>
+                        {% endfor %}
+                        {% else %}
+                        <h3>No files in your drive!</h3>    
+                    {% endif %}
+                </ul>
+            </div>
+            <form method="post" action="/strachob/drive/upload" enctype="multipart/form-data">
+                <label class="btn" id="add" >Choose file <input type="file" name="file" id="fileUpload" onchange="uploadFiles()" /> </label>
+                <label id="fileLabel" >dwa</label>
+                <label class="btn" id="sendButton" >Add file <input type="submit" /> </label>
+            </form>
+            {% if error%}
+                <label id='fileLabel2'>{{error}}</label>
+            {% endif %}
+        </div> <!-- End Box -->
+
+<script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+</body>
+</html>
