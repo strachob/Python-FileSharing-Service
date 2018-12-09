@@ -5,11 +5,17 @@ from datetime import datetime as d8
 
 app = Flask(__name__,static_url_path="/strachob/drive/static")
 
+with open('./static/config.json') as json_file:
+    config_data = json.load(json_file)
 
 @app.route('/strachob/dl/upload', methods=['POST'])
 def upload():
     if request.form['tkn'] is None:
         return redirect('https://pi.iem.pw.edu.pl/strachob/drive/no_token')
+    
+    
+    if(request.files['file'] is None):
+        print("ok")
     verifiedData = verifyUser(str(request.form['tkn']))
     if verifiedData is not None:
         if verifiedData == "Your token has expired":
@@ -20,7 +26,10 @@ def upload():
 
         file_to_save = request.files['file']
         file_to_save.save('files/' + verifiedData['usr'] + '/' + secure_filename(file_to_save.filename))
-        requests.post('https://pi.iem.pw.edu.pl:6889/strachob/events/notify/'+verifiedData['usr'], data={'file':file_to_save.filename}, verify=False)
+        try:
+            requests.post('https://pi.iem.pw.edu.pl:6889/strachob/events/notify/'+verifiedData['usr'], data={'file':file_to_save.filename}, verify=False)
+        except requests.exceptions.RequestException as e:
+            print('Server Node is not working at the time')
 
     return redirect('https://pi.iem.pw.edu.pl/strachob/drive/box')
     
@@ -41,10 +50,11 @@ def download():
 
 def verifyUser(tkn):
     try:
-        data = jwt.decode(tkn, 'S3crt', algorithms=['HS256'])
-        return data
+        data_decoded = jwt.decode(tkn, config_data["DL_JWT_SECRET"], algorithms=['HS256'])
+        return data_decoded
     except:
         return "Your token has expired"
+
 
 #app.run(port=6888, ssl_context=('cert.pem','key.pem'))
 
