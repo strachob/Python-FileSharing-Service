@@ -8,7 +8,6 @@ app = Flask(__name__,static_url_path="/strachob/drive/static")
 app.secret_key = b'awi12. as aw23u1[ 82913y'
 
 
-
 @app.route('/strachob/drive/')
 def index():
     username = username_from_cookies(request.cookies.get('_loginID'))
@@ -18,20 +17,31 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/strachob/drive/off')
+def off():
+    return render_template('off.html', error="Stick to your own files!")
+
+
+@app.route('/strachob/drive/no_token')
+def no_token():
+    return render_template('off.html', error="No token to verify!")
+
+
+@app.route('/strachob/drive/exp_token')
+def exp_token():
+    return render_template('off.html', error="Your token has expired!")
+
+
 @app.route('/strachob/drive/box/')
 def box():
-    if request.args.get('f') == '2':
-        return render_template('off.html', error="Your token has expired!")
-    elif request.args.get('f') == '3':
-        return render_template('off.html', error="No token to verify!")
-
     username = username_from_cookies(request.cookies.get('_loginID'))
     if username is None:
         return render_template('index.html', error="Login in first!")
 
     tkn = jwt_token_create_up(username)
     files_to_show = os.listdir('./files/'+username)
-    if request.args.get('f') == '1':
+
+    if request.args.get('files') == '1':
         return render_template('box.html', files=files_to_show, username=username, tkn=tkn, error="You can only upload 5 files!")
     return render_template('box.html', files=files_to_show, username=username, tkn=tkn )
 
@@ -85,22 +95,31 @@ def login():
     return render_template('index.html', error=error)
 
 
-@app.route('/strachob/drive/download/<user>/<filename>', methods=['GET'])
-def download(user, filename):
+@app.route('/strachob/drive/share', methods=['POST'])
+def share():
     loggedUser = username_from_cookies(request.cookies.get('_loginID'))
+    user = request.form['user']
     if (user != loggedUser):
         return redirect(url_for('off'))
-    tkn = jwt_token_create_down(user, filename)
+
+    filename = request.form['file']      
+    link = 'https://pi.iem.pw.edu.pl/strachob/dl/download?tkn='+jwt_token_create_down(user, filename, True)
+    return render_template('box.html', share=filename, username=user, link=link)
+
+
+@app.route('/strachob/drive/download', methods=['POST'])
+def download():
+    loggedUser = username_from_cookies(request.cookies.get('_loginID'))
+    user = request.form['user']
+    if (user != loggedUser):
+        return redirect(url_for('off'))
+    filename = request.form['file']  
+    tkn = jwt_token_create_down(user, filename, False)
     resp  = jsonify()
     resp.status_code= 301
     resp.headers['location'] = 'https://pi.iem.pw.edu.pl/strachob/dl/download?tkn='+tkn
     resp.autocorrect_location_header = False
     return resp
-
-
-@app.route('/strachob/drive/off')
-def off():
-    return render_template('off.html', error="Stick to your own files!")
 
 
 def search_for_user(email):
@@ -169,8 +188,11 @@ def new_cookie(login):
     return tkn   
 
 
-def jwt_token_create_down(folder, file_name):
-    tkn = jwt.encode({"usr":folder,"file":file_name,"exp": five_min_date() }, 'S3crt', algorithm='HS256')
+def jwt_token_create_down(folder, file_name, long):
+    if long:
+        tkn = jwt.encode({"usr":folder,"file":file_name }, 'S3crt', algorithm='HS256')
+    else:    
+        tkn = jwt.encode({"usr":folder,"file":file_name,"exp": five_min_date() }, 'S3crt', algorithm='HS256')
     return tkn.decode("UTF-8")
 
 
@@ -193,4 +215,6 @@ def check_files_folder():
 
 
 check_files_folder()
+
+#app.run(port=6887, ssl_context=('cert.pem','key.pem'))
     

@@ -16,27 +16,45 @@
             </form>
 
             <div class="listbox">
-                <ul align="left">
-                    {% if files %}
+                {% if files %}
+                    <ul align="left">
                         {% for file in files %}
-                            <li> <a href="/strachob/drive/download/{{username}}/{{file}}" class="file">{{ file }}</a><a href="#"><div class="deleteButton">&#10006;</div></a></li>
+                            <li><form method="post" action="/strachob/drive/share">
+                                <label class="file" >{{ file }}<input type="submit"/></label><a href="#"><div class="deleteButton">&#10006;</div></a>
+                                <input type="hidden" name="file" value={{ file }}>
+                                <input type="hidden" name="user" value={{ username }}>
+                            </form></li>
                         {% endfor %}
-                        {% else %}
+                {% elif share %}
+                    <form method="post" action="/strachob/drive/download">
+                        <h1>File: {{ share }}</h1>
+                        <label>If you want to share your file copy this link: <br/> <textarea readonly class="area"> {{ link }} </textarea></label>
+                        <hr/>
+                        <label class="btn2">Download the file<input type="submit" /></label>
+                        <a href="/strachob/drive/box"><div id="btn2">Back</div></a>
+                        <input type="hidden" name="file" value={{ share }}>
+                        <input type="hidden" name="user" value={{ username }}>
+                    </form>
+                    
+                        
+                {% else %}
                         <h3>No files in your drive!</h3>    
-                    {% endif %}
-                </ul>
-            </div>
+                    </ul>
+                {% endif %}
+                </div>
+            {% if not share %}
             <form method="post" action="https://pi.iem.pw.edu.pl/strachob/dl/upload" enctype="multipart/form-data">
                 <label class="btn" id="add" >Choose file <input type="file" name="file" id="fileUpload" onchange="uploadFiles()" /> </label>
                 <input type="hidden" name="tkn" value ={{ tkn }} />
                 <label id="fileLabel" >dwa</label>
                 <label class="btn" id="sendButton" >Add file <input type="submit" /> </label>
             </form>
+            {% endif %}
             {% if error%}
                 <label id='fileLabel2'>{{error}}</label>
             {% endif %}
-        </div> <!-- End Box -->
-
-<script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+        </div> 
+        
+<script src="{{ url_for('static', filename='script1.js') }}" user={{username}} type="text/javascript" defer="defer"></script>
 </body>
 </html>
