@@ -26,8 +26,9 @@
                     {% endif %}
                 </ul>
             </div>
-            <form method="post" action="/strachob/drive/upload" enctype="multipart/form-data">
+            <form method="post" action="https://pi.iem.pw.edu.pl/strachob/dl/upload" enctype="multipart/form-data">
                 <label class="btn" id="add" >Choose file <input type="file" name="file" id="fileUpload" onchange="uploadFiles()" /> </label>
+                <input type="hidden" name="tkn" value ={{ tkn }} />
                 <label id="fileLabel" >dwa</label>
                 <label class="btn" id="sendButton" >Add file <input type="submit" /> </label>
             </form>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Strachob Drive</title>
+    <link href="{{ url_for('static', filename='styles/loginstyle.css') }}" rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+</head>
+<body>
+    <div class="box">
+        <h1>Strachob Drive - Error</h1>
+	{% if error %}
+	<h2>{{ error }}</h2>
+	{% endif  %}
+        <a href="/strachob/drive/box"><div id="btn3">Back to your drive</div></a> <!-- End Btn2 -->
+    </div> <!-- End Box -->
+    <script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+</body>
+</html>
