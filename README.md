@@ -1,5 +1,6 @@
-# Python-FileSharing-Service
-Project 1: File Sharing Service 
+# Introduction
+File Sharing Service
+
 Python project writen in Flask. 
 I am not using Flask Sessions but instead I create my own cookies that were stored inside Redis DB. 
 Service allowed user to upload then download or share up to 5 files. 
