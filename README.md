@@ -7,3 +7,7 @@ Service allowed user to upload then download or share up to 5 files.
 Latest update added support for login from Oauth 2.0 with the Auth0 service. 
 Also used Server Sent Events from Node.js server to support notifications on multiple devices at once. 
 .ini files are used because Services are running from academic server via uwsgi.
+
+I the latest realese to run it you will need a local redis server, RabbitMQ server and to authorize through outh2.0 please enter 
+email: test@test.com 
+password: Test123$
