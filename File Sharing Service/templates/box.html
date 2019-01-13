@@ -34,7 +34,10 @@
                         <button type="submit" class="btn btn-link">{{ file }}</button>
                         <input type="hidden" name="file" value={{ file }}>
                         <input type="hidden" name="user" value={{ username }}>
-                    </form></li>
+                    </form>
+                    <img src="../static/icons/{{username}}/{{file}}.icon.png" alt="Defaults" onerror="this.src='../static/icons/def-icon.png'">
+                    
+                    </li>
                 {% endfor %}
             {% elif share %}
                 <form method="post" action="/strachob/drive/download">

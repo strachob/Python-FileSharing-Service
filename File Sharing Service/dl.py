@@ -1,7 +1,8 @@
 from flask import Flask, session, request, render_template, redirect, url_for, make_response, send_from_directory
 from werkzeug.utils import secure_filename
-import json, os, datetime, uuid, jwt, requests
+import json, os, datetime, uuid, jwt, requests, pika
 from datetime import datetime as d8
+from shutil import copyfile
 
 app = Flask(__name__,static_url_path="/strachob/drive/static")
 
@@ -24,10 +25,17 @@ def upload():
         if len(os.listdir('./files/' + verifiedData['usr'])) >= 5:
             return redirect('https://127.0.0.1:6887/strachob/drive/upload_view?files=1')
 
+
         file_to_save = request.files['file']
-        file_to_save.save('files/' + verifiedData['usr'] + '/' + secure_filename(file_to_save.filename))
+        path_to_save = 'files/' + verifiedData['usr'] + '/' + secure_filename(file_to_save.filename)
+        file_to_save.save(path_to_save)
+        
+        if file_to_save.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            copyfile('./static/icons/def-icon.png','./static/icons/'+ verifiedData['usr'] + '/' + secure_filename(file_to_save.filename)+'.icon.png')
+            push_to_queue(path_to_save)
+
         try:
-            requests.post('https://127.0.0.1:6887:6889/strachob/events/notify/'+verifiedData['usr'], data={'file':file_to_save.filename}, verify=False)
+            requests.post('https://127.0.0.1:6889/strachob/events/notify/'+verifiedData['usr'], data={'file':file_to_save.filename}, verify=False)
         except requests.exceptions.RequestException as e:
             print('Server Node is not working at the time')
 
@@ -55,6 +63,24 @@ def verifyUser(tkn):
     except:
         return "Your token has expired"
 
+def push_to_queue(path_to_file):
+    exchange = 'strachob_pictures'
+    exchange_type = 'direct'
+    routing_key = 'miniturize'
 
-app.run(port=6888, ssl_context=('cert.pem','key.pem'))
+    print("==> %s ==> %s (%s)" % (routing_key, exchange, exchange_type))
+    body = path_to_file
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange=exchange,
+                         exchange_type=exchange_type)
+    channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=body)
+    print(" [x] Sent '{}'".format(body))
+    connection.close()
+
+#app.run(port=6888, ssl_context=('cert.pem','key.pem'))
 

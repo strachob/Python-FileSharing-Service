@@ -7,7 +7,7 @@ from six.moves.urllib.parse import urlencode
 
 app = Flask(__name__,static_url_path="/strachob/drive/static")
 app.secret_key = b'awi12. as aw23u1[ 82913y'
-red = redis.StrictRedis(port=6379)
+red = redis.StrictRedis()
 oauth = OAuth(app)
 
 with open('./static/config.json') as json_file:
@@ -169,5 +169,5 @@ def five_min_date():
     login_time = login_time + datetime.timedelta(minutes=5)
     return login_time
 
-app.run(port=6887, ssl_context=('cert.pem','key.pem'))
+#app.run(port=6887, ssl_context=('cert.pem','key.pem'))
     
