@@ -15,8 +15,8 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="#">Your files <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="/strachob/drive/upload_view">Upload</a>
+      <a class="nav-item nav-link" href="/strachob/drive/box">Your files</a>
+      <a class="nav-item nav-link active" href="#">Upload <span class="sr-only">(current)</span></a>
       <form method="post" action="/strachob/drive/logout">
                 <button class="btn btn-danger" type="submit">Logout</button>
         </form>
@@ -27,36 +27,20 @@
 <body>
     <div class="container-fluid">
         <h2 align="left">{{username}}'s files</h2>
-            <div class="list-group">
-            {% if files %}
-                {% for file in files %}
-                    <li class="list-group-item"><form method="post" action="/strachob/drive/share">
-                        <button type="submit" class="btn btn-link">{{ file }}</button>
-                        <input type="hidden" name="file" value={{ file }}>
-                        <input type="hidden" name="user" value={{ username }}>
-                    </form></li>
-                {% endfor %}
-            {% elif share %}
-                <form method="post" action="/strachob/drive/download">
-                    <h3>File: {{ share }}</h3>
-                    
-                    <div class="md-form">
-                        <label for="form7">If you want to share your file copy this link:</label>
-                        <textarea type="text" id="form7" class="md-textarea form-control" rows="2" readonly> {{ link }} </textarea>
-                    </div>
-                    <label>Or click the button below to dowload it instead:</label><br>
-                    <input type="submit" class="btn btn-warning" value="Download the file"></input>
-                    <hr/>
-                    <a href="/strachob/drive/box" class="btn btn-secondary">Back</a>
-                    <input type="hidden" name="file" value={{ share }}>
-                    <input type="hidden" name="user" value={{ username }}>
-                </form>        
-            {% else %}
-                <h3>No files in your drive!</h3>  
-            {% endif %}
+            <form method="post" action="https://127.0.0.1:6888/strachob/dl/upload" enctype="multipart/form-data">
+                <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button role="submit" class="input-group-text">Upload</button>
                 </div>
+                <div class="custom-file">
+                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile01" required onchange="uploadFiles()">
+                    <input type="hidden" name="tkn" value ={{ tkn }} />
+                    <label class="custom-file-label" for="inputGroupFile01" id="fileLabel">Choose file</label>
+                </div>
+                </div>
+            </form>
             {% if error%}
-                <label id='fileLabel2'>{{error}}</label>
+                <span class="text-warning" >{{error}}</span>
             {% endif %}
         </div> 
         

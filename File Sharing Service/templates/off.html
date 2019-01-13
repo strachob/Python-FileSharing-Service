@@ -4,17 +4,28 @@
 <head>
     <meta charset="utf-8"/>
     <title>Strachob Drive</title>
-    <link href="{{ url_for('static', filename='styles/loginstyle.css') }}" rel='stylesheet' type='text/css'>
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
+    <link href="{{ url_for('static', filename='styles/com.css') }}" rel='stylesheet' type='text/css'>
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
 </head>
 <body>
-    <div class="box">
+    <div class="card" style="width: 24rem; margin-left:40%;">
+         <div class="card-body">
         <h1>Strachob Drive - Error</h1>
 	{% if error %}
 	<h2>{{ error }}</h2>
 	{% endif  %}
         <a href="/strachob/drive/box"><div id="btn3">Back to your drive</div></a> <!-- End Btn2 -->
     </div> <!-- End Box -->
+    </div>
     <script src="{{ url_for('static', filename='script1.js') }}" type="text/javascript" defer="defer"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
+<footer class="page-footer font-small blue">
+  <div class="footer-copyright text-center py-3">© 2018 
+    <a href="https://github.com/strachob"> Bartosz Strachowski</a>
+  </div>
+</footer>
 </html>

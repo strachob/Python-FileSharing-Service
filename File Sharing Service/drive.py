@@ -7,7 +7,7 @@ from six.moves.urllib.parse import urlencode
 
 app = Flask(__name__,static_url_path="/strachob/drive/static")
 app.secret_key = b'awi12. as aw23u1[ 82913y'
-red = redis.StrictRedis()
+red = redis.StrictRedis(port=6379)
 oauth = OAuth(app)
 
 with open('./static/config.json') as json_file:
@@ -50,6 +50,17 @@ def exp_token():
     return render_template('off.html', error="Your token has expired!")
 
 
+@app.route('/strachob/drive/upload_view')
+def upload_view():
+    username = username_from_cookies(request.cookies.get('_loginID'))
+    if username is None:
+        return render_template('index.html', error="Login in first!")
+
+    tkn = jwt_token_create_up(username)
+    if request.args.get('files') == '1':
+        return render_template('upload.html', username=username, tkn=tkn, error="You can only upload 5 files!")
+    return render_template('upload.html', username = username, tkn=tkn)
+
 @app.route('/strachob/drive/callback')
 def auth_callback():
     auth0.authorize_access_token()
@@ -67,12 +78,9 @@ def box():
     if username is None:
         return render_template('index.html', error="Login in first!")
 
-    tkn = jwt_token_create_up(username)
     files_to_show = os.listdir('./files/'+username)
 
-    if request.args.get('files') == '1':
-        return render_template('box.html', files=files_to_show, username=username, tkn=tkn, error="You can only upload 5 files!")
-    return render_template('box.html', files=files_to_show, username=username, tkn=tkn )
+    return render_template('box.html', files=files_to_show, username=username)
 
 
 @app.route('/strachob/drive/logout', methods=['POST'])
@@ -92,7 +100,7 @@ def login():
     if username:
         return redirect(url_for('box'))
 
-    return auth0.authorize_redirect(redirect_uri='https://pi.iem.pw.edu.pl/strachob/drive/callback', audience='https://strachob.eu.auth0.com/userinfo')
+    return auth0.authorize_redirect(redirect_uri='https://127.0.0.1:6887/strachob/drive/callback', audience='https://strachob.eu.auth0.com/userinfo')
 
 
 @app.route('/strachob/drive/share', methods=['POST'])
@@ -103,7 +111,7 @@ def share():
         return redirect(url_for('off'))
 
     filename = request.form['file']      
-    link = 'https://pi.iem.pw.edu.pl/strachob/dl/download?tkn='+jwt_token_create_down(user, filename, True)
+    link = 'https://127.0.0.1:6888/strachob/dl/download?tkn='+jwt_token_create_down(user, filename, True)
     return render_template('box.html', share=filename, username=user, link=link)
 
 
@@ -117,7 +125,7 @@ def download():
     tkn = jwt_token_create_down(user, filename, False)
     resp  = jsonify()
     resp.status_code= 301
-    resp.headers['location'] = 'https://pi.iem.pw.edu.pl/strachob/dl/download?tkn='+tkn
+    resp.headers['location'] = 'https://127.0.0.1:6888/strachob/dl/download?tkn='+tkn
     resp.autocorrect_location_header = False
     return resp
 
@@ -161,5 +169,5 @@ def five_min_date():
     login_time = login_time + datetime.timedelta(minutes=5)
     return login_time
 
-#app.run(port=6887, ssl_context=('cert.pem','key.pem'))
+app.run(port=6887, ssl_context=('cert.pem','key.pem'))
     
